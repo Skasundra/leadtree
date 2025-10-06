@@ -36,7 +36,7 @@ export const Topbar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="h-14 bg-gradient-to-r from-white via-white to-slate-5xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-[0_2px_4px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.3)] sticky top-0 z-50 transition-all duration-300">
+    <header className="h-14 bg-white dark:bg-slate-900 border-b border-slate-200/50 dark:border-slate-700 shadow-[0_2px_4px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.3)] sticky top-0 z-50 transition-all duration-300">
       <div className="flex h-full items-center justify-between px-4 sm:px-6 lg:px-8 max-w-[1920px] mx-auto">
         {/* Left side */}
         <div className="flex items-center space-x-4">
