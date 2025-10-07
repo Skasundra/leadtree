@@ -146,10 +146,10 @@ export const AddUser = () => {
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Navigate back to user management
-      navigate("/admin/users");
+      // navigate("/admin/users");
     } catch (error) {
       console.error("Failed to create user:", error);
       setErrors({ submit: "Failed to create user. Please try again." });

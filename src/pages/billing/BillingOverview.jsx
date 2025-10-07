@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { PageWrapper } from '../../components/layout/PageWrapper';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { RoleGuard } from '../../components/auth/RoleGuard';
 
 const UsageCard = ({ title, current, limit, unit, color = "primary" }) => {
   const percentage = (current / limit) * 100;
@@ -62,23 +61,22 @@ export const BillingOverview = () => {
   ];
 
   return (
-    <RoleGuard allowedRoles={['super_admin', 'admin']}>
-      <PageWrapper
-        title="Billing & Usage"
-        description="Manage your subscription and monitor usage"
-        actions={
-          <div className="flex space-x-3">
-            <Button variant="outline" onClick={() => window.location.href = '/billing/topup'}>
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Buy Top-up Credits
-            </Button>
-            <Button variant="outline">
-              <CreditCard className="h-4 w-4 mr-2" />
-              Update Payment Method
-            </Button>
-          </div>
-        }
-      >
+    <PageWrapper
+      title="Billing & Usage"
+      description="Manage your subscription and monitor usage"
+      actions={
+        <div className="flex space-x-3">
+          <Button variant="outline" onClick={() => window.location.href = '/billing/topup'}>
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Buy Top-up Credits
+          </Button>
+          <Button variant="outline">
+            <CreditCard className="h-4 w-4 mr-2" />
+            Update Payment Method
+          </Button>
+        </div>
+      }
+    >
         <div className="space-y-6">
           {/* Current Plan */}
           <Card>
@@ -210,6 +208,5 @@ export const BillingOverview = () => {
           </Card>
         </div>
       </PageWrapper>
-    </RoleGuard>
   );
 };

@@ -28,6 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/Card";
+import leadTreeLogo from "../../assets/leadtree.png";
 
 export const LandingPage = () => {
   const navigate = useNavigate();
@@ -208,13 +209,13 @@ export const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
-              <div className="relative">
-                <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl shadow-lg"></div>
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl animate-pulse opacity-75"></div>
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                LeadTree
-              </span>
+              <img 
+                src={leadTreeLogo} 
+                alt="LeadTree" 
+                className="h-10 w-auto object-contain cursor-pointer"
+                onClick={() => navigate("/")}
+              />
+
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a
@@ -853,13 +854,11 @@ export const LandingPage = () => {
             {/* Brand Section */}
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="relative">
-                  <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl shadow-lg"></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl animate-pulse opacity-75"></div>
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  LeadTree
-                </span>
+                <img 
+                  src={leadTreeLogo} 
+                  alt="LeadTree" 
+                  className="h-10 w-auto object-contain"
+                />
               </div>
               <p className="text-slate-400 mb-6 leading-relaxed">
                 The all-in-one platform for email outreach and lead management.

@@ -214,10 +214,10 @@ export const CreateRole = () => {
     
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Navigate back to role management
-      navigate('/admin/roles');
+      // // Navigate back to role management
+      // navigate('/admin/roles');
     } catch (error) {
       console.error('Failed to create role:', error);
       setErrors({ submit: 'Failed to create role. Please try again.' });

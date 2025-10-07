@@ -104,7 +104,7 @@ export const Topbar = ({ onMenuClick }) => {
           </Button>
 
           {/* Quick actions */}
-          <div className="hidden lg:flex items-center space-x-2 mr-3">
+          {/* <div className="hidden lg:flex items-center space-x-2 mr-3">
             <Link to="/leads/add">
               <Button
                 variant="default"
@@ -115,7 +115,7 @@ export const Topbar = ({ onMenuClick }) => {
                 New Lead
               </Button>
             </Link>
-          </div>
+          </div> */}
 
           {/* Theme toggle */}
           <Button

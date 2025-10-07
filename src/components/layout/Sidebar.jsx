@@ -16,6 +16,8 @@ import {
 import { cn } from "../../utils/cn";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Tooltip } from "../ui/Tooltip";
+import leadTreeLogo from "../../assets/leadtree.png";
+import leadTreeLogoV2 from "../../assets/leadtree-v2.png";
 
 const navigation = [
   {
@@ -138,14 +140,14 @@ export const Sidebar = ({ isOpen, setIsOpen }) => {
             className="flex items-center group"
             onClick={handleNavClick}
           >
-            <div className="h-9 w-9 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-              <span className="text-white font-bold text-sm">LT</span>
-            </div>
-            {isOpen && (
-              <span className="ml-3 text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
-                LeadTree
-              </span>
-            )}
+            <img
+              src={isOpen ? leadTreeLogo : leadTreeLogoV2}
+              alt="LeadTree"
+              className={cn(
+                "object-contain transition-all duration-300",
+                isOpen ? " w-auto" : " w-9"
+              )}
+            />
           </Link>
           {isMobile && isOpen && (
             <button

@@ -1,113 +1,161 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Crown, 
-  User, 
-  Mail, 
-  CreditCard, 
-  Calendar, 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Crown,
+  User,
+  Mail,
+  CreditCard,
+  Calendar,
   DollarSign,
-  ArrowLeft, 
+  ArrowLeft,
   Save,
   Search,
   AlertCircle,
   CheckCircle,
-  Plus
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
-import { Button } from '../../../components/ui/Button';
-import { Input } from '../../../components/ui/Input';
+  Plus,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/Card";
+import { Button } from "../../../components/ui/Button";
+import { Input } from "../../../components/ui/Input";
 
 export const AddSubscription = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [formData, setFormData] = useState({
-    userId: '',
-    plan: 'basic',
-    billingCycle: 'monthly',
-    startDate: new Date().toISOString().split('T')[0],
-    paymentMethod: 'credit_card',
+    userId: "",
+    plan: "basic",
+    billingCycle: "monthly",
+    startDate: new Date().toISOString().split("T")[0],
+    paymentMethod: "credit_card",
     autoRenew: true,
     trialDays: 0,
     discount: 0,
-    notes: ''
+    notes: "",
   });
 
   const [errors, setErrors] = useState({});
 
   // Mock users for search
   const users = [
-    { id: 1, name: 'John Doe', email: 'john.doe@example.com', hasSubscription: false },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', hasSubscription: true },
-    { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', hasSubscription: false },
-    { id: 4, name: 'Sarah Wilson', email: 'sarah.wilson@example.com', hasSubscription: false },
-    { id: 5, name: 'David Brown', email: 'david.brown@example.com', hasSubscription: false }
+    {
+      id: 1,
+      name: "John Doe",
+      email: "john.doe@example.com",
+      hasSubscription: false,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      email: "jane.smith@example.com",
+      hasSubscription: true,
+    },
+    {
+      id: 3,
+      name: "Mike Johnson",
+      email: "mike.johnson@example.com",
+      hasSubscription: false,
+    },
+    {
+      id: 4,
+      name: "Sarah Wilson",
+      email: "sarah.wilson@example.com",
+      hasSubscription: false,
+    },
+    {
+      id: 5,
+      name: "David Brown",
+      email: "david.brown@example.com",
+      hasSubscription: false,
+    },
   ];
 
   const plans = [
     {
-      id: 'basic',
-      name: 'Basic',
-      description: 'Perfect for individuals getting started',
+      id: "basic",
+      name: "Basic",
+      description: "Perfect for individuals getting started",
       monthlyPrice: 19,
       yearlyPrice: 190,
-      features: ['Up to 1,000 leads', 'Basic analytics', 'Email support', '5 campaigns'],
-      color: 'from-blue-500 to-blue-600'
+      features: [
+        "Up to 1,000 leads",
+        "Basic analytics",
+        "Email support",
+        "5 campaigns",
+      ],
+      color: "from-blue-500 to-blue-600",
     },
     {
-      id: 'pro',
-      name: 'Pro',
-      description: 'Best for growing teams and businesses',
+      id: "pro",
+      name: "Pro",
+      description: "Best for growing teams and businesses",
       monthlyPrice: 49,
       yearlyPrice: 490,
-      features: ['Up to 10,000 leads', 'Advanced analytics', 'Priority support', 'Unlimited campaigns', 'API access'],
-      color: 'from-purple-500 to-purple-600'
+      features: [
+        "Up to 10,000 leads",
+        "Advanced analytics",
+        "Priority support",
+        "Unlimited campaigns",
+        "API access",
+      ],
+      color: "from-purple-500 to-purple-600",
     },
     {
-      id: 'premium',
-      name: 'Premium',
-      description: 'For large organizations with advanced needs',
+      id: "premium",
+      name: "Premium",
+      description: "For large organizations with advanced needs",
       monthlyPrice: 99,
       yearlyPrice: 990,
-      features: ['Unlimited leads', 'Custom integrations', '24/7 support', 'White-label', 'Advanced security'],
-      color: 'from-gold-500 to-yellow-600'
-    }
+      features: [
+        "Unlimited leads",
+        "Custom integrations",
+        "24/7 support",
+        "White-label",
+        "Advanced security",
+      ],
+      color: "from-gold-500 to-yellow-600",
+    },
   ];
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
   const handleUserSelect = (user) => {
     setSelectedUser(user);
-    setFormData(prev => ({ ...prev, userId: user.id }));
+    setFormData((prev) => ({ ...prev, userId: user.id }));
     setStep(2);
   };
 
   const validateStep = (stepNumber) => {
     const newErrors = {};
-    
+
     if (stepNumber === 1 && !selectedUser) {
-      newErrors.user = 'Please select a user';
+      newErrors.user = "Please select a user";
     }
-    
+
     if (stepNumber === 2) {
-      if (!formData.plan) newErrors.plan = 'Please select a plan';
-      if (!formData.startDate) newErrors.startDate = 'Start date is required';
+      if (!formData.plan) newErrors.plan = "Please select a plan";
+      if (!formData.startDate) newErrors.startDate = "Start date is required";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -125,29 +173,31 @@ export const AddSubscription = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateStep(2)) return;
 
     setLoading(true);
-    
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Navigate back to subscription management
-      navigate('/admin/subscriptions');
+      // // Simulate API call
+      // await new Promise(resolve => setTimeout(resolve, 1500));
+      // // Navigate back to subscription management
+      // navigate('/admin/subscriptions');
     } catch (error) {
-      console.error('Failed to create subscription:', error);
-      setErrors({ submit: 'Failed to create subscription. Please try again.' });
+      console.error("Failed to create subscription:", error);
+      setErrors({ submit: "Failed to create subscription. Please try again." });
     } finally {
       setLoading(false);
     }
   };
 
-  const selectedPlan = plans.find(p => p.id === formData.plan);
+  const selectedPlan = plans.find((p) => p.id === formData.plan);
   const calculatePrice = () => {
     if (!selectedPlan) return 0;
-    const basePrice = formData.billingCycle === 'yearly' ? selectedPlan.yearlyPrice : selectedPlan.monthlyPrice;
+    const basePrice =
+      formData.billingCycle === "yearly"
+        ? selectedPlan.yearlyPrice
+        : selectedPlan.monthlyPrice;
     const discountAmount = (basePrice * formData.discount) / 100;
     return basePrice - discountAmount;
   };
@@ -158,15 +208,19 @@ export const AddSubscription = () => {
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
-          onClick={() => navigate('/admin/subscriptions')}
+          onClick={() => navigate("/admin/subscriptions")}
           className="text-slate-400 hover:text-white"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Subscriptions
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-white">Add New Subscription</h1>
-          <p className="text-slate-400 mt-1">Create a subscription for a user</p>
+          <h1 className="text-3xl font-bold text-white">
+            Add New Subscription
+          </h1>
+          <p className="text-slate-400 mt-1">
+            Create a subscription for a user
+          </p>
         </div>
       </div>
 
@@ -176,11 +230,13 @@ export const AddSubscription = () => {
           <div className="flex items-center justify-between">
             {[1, 2, 3].map((stepNumber) => (
               <div key={stepNumber} className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                  step >= stepNumber 
-                    ? 'bg-purple-600 border-purple-600 text-white' 
-                    : 'border-slate-600 text-slate-400'
-                }`}>
+                <div
+                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
+                    step >= stepNumber
+                      ? "bg-purple-600 border-purple-600 text-white"
+                      : "border-slate-600 text-slate-400"
+                  }`}
+                >
                   {step > stepNumber ? (
                     <CheckCircle className="h-5 w-5" />
                   ) : (
@@ -188,21 +244,35 @@ export const AddSubscription = () => {
                   )}
                 </div>
                 {stepNumber < 3 && (
-                  <div className={`w-24 h-0.5 mx-4 transition-all ${
-                    step > stepNumber ? 'bg-purple-600' : 'bg-slate-600'
-                  }`} />
+                  <div
+                    className={`w-24 h-0.5 mx-4 transition-all ${
+                      step > stepNumber ? "bg-purple-600" : "bg-slate-600"
+                    }`}
+                  />
                 )}
               </div>
             ))}
           </div>
           <div className="flex justify-between mt-4">
-            <span className={`text-sm ${step >= 1 ? 'text-purple-400' : 'text-slate-400'}`}>
+            <span
+              className={`text-sm ${
+                step >= 1 ? "text-purple-400" : "text-slate-400"
+              }`}
+            >
               Select User
             </span>
-            <span className={`text-sm ${step >= 2 ? 'text-purple-400' : 'text-slate-400'}`}>
+            <span
+              className={`text-sm ${
+                step >= 2 ? "text-purple-400" : "text-slate-400"
+              }`}
+            >
               Choose Plan
             </span>
-            <span className={`text-sm ${step >= 3 ? 'text-purple-400' : 'text-slate-400'}`}>
+            <span
+              className={`text-sm ${
+                step >= 3 ? "text-purple-400" : "text-slate-400"
+              }`}
+            >
               Configure & Review
             </span>
           </div>
@@ -212,9 +282,9 @@ export const AddSubscription = () => {
           <CardHeader>
             <CardTitle className="text-white flex items-center">
               <Crown className="h-5 w-5 mr-2" />
-              {step === 1 && 'Select User'}
-              {step === 2 && 'Choose Subscription Plan'}
-              {step === 3 && 'Configure Subscription'}
+              {step === 1 && "Select User"}
+              {step === 2 && "Choose Subscription Plan"}
+              {step === 3 && "Configure Subscription"}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -241,13 +311,15 @@ export const AddSubscription = () => {
                     {filteredUsers.map((user) => (
                       <div
                         key={user.id}
-                        onClick={() => !user.hasSubscription && handleUserSelect(user)}
+                        onClick={() =>
+                          !user.hasSubscription && handleUserSelect(user)
+                        }
                         className={`p-4 rounded-lg border transition-all cursor-pointer ${
                           user.hasSubscription
-                            ? 'border-slate-600 bg-slate-700/30 opacity-50 cursor-not-allowed'
+                            ? "border-slate-600 bg-slate-700/30 opacity-50 cursor-not-allowed"
                             : selectedUser?.id === user.id
-                            ? 'border-purple-500 bg-purple-500/10'
-                            : 'border-slate-600 bg-slate-700/50 hover:border-slate-500 hover:bg-slate-700/70'
+                            ? "border-purple-500 bg-purple-500/10"
+                            : "border-slate-600 bg-slate-700/50 hover:border-slate-500 hover:bg-slate-700/70"
                         }`}
                       >
                         <div className="flex items-center justify-between">
@@ -258,8 +330,12 @@ export const AddSubscription = () => {
                               </span>
                             </div>
                             <div>
-                              <h3 className="text-white font-medium">{user.name}</h3>
-                              <p className="text-slate-400 text-sm">{user.email}</p>
+                              <h3 className="text-white font-medium">
+                                {user.name}
+                              </h3>
+                              <p className="text-slate-400 text-sm">
+                                {user.email}
+                              </p>
                             </div>
                           </div>
                           <div className="flex items-center">
@@ -282,7 +358,9 @@ export const AddSubscription = () => {
                     <div className="text-center py-12">
                       <User className="h-12 w-12 text-slate-600 mx-auto mb-4" />
                       <p className="text-slate-400 text-lg">No users found</p>
-                      <p className="text-slate-500 text-sm">Try adjusting your search criteria</p>
+                      <p className="text-slate-500 text-sm">
+                        Try adjusting your search criteria
+                      </p>
                     </div>
                   )}
 
@@ -300,8 +378,12 @@ export const AddSubscription = () => {
                 <div className="space-y-6">
                   {selectedUser && (
                     <div className="p-4 bg-slate-700/50 rounded-lg">
-                      <p className="text-slate-300 text-sm">Creating subscription for:</p>
-                      <p className="text-white font-medium">{selectedUser.name} ({selectedUser.email})</p>
+                      <p className="text-slate-300 text-sm">
+                        Creating subscription for:
+                      </p>
+                      <p className="text-white font-medium">
+                        {selectedUser.name} ({selectedUser.email})
+                      </p>
                     </div>
                   )}
 
@@ -315,8 +397,8 @@ export const AddSubscription = () => {
                           key={plan.id}
                           className={`p-6 rounded-lg border cursor-pointer transition-all ${
                             formData.plan === plan.id
-                              ? 'border-purple-500 bg-purple-500/10'
-                              : 'border-slate-600 bg-slate-700/50 hover:border-slate-500'
+                              ? "border-purple-500 bg-purple-500/10"
+                              : "border-slate-600 bg-slate-700/50 hover:border-slate-500"
                           }`}
                         >
                           <input
@@ -324,23 +406,40 @@ export const AddSubscription = () => {
                             name="plan"
                             value={plan.id}
                             checked={formData.plan === plan.id}
-                            onChange={(e) => handleInputChange('plan', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("plan", e.target.value)
+                            }
                             className="sr-only"
                           />
                           <div className="text-center">
-                            <div className={`h-12 w-12 bg-gradient-to-r ${plan.color} rounded-lg flex items-center justify-center mx-auto mb-4`}>
+                            <div
+                              className={`h-12 w-12 bg-gradient-to-r ${plan.color} rounded-lg flex items-center justify-center mx-auto mb-4`}
+                            >
                               <Crown className="h-6 w-6 text-white" />
                             </div>
-                            <h3 className="text-white font-semibold text-lg mb-2">{plan.name}</h3>
-                            <p className="text-slate-400 text-sm mb-4">{plan.description}</p>
+                            <h3 className="text-white font-semibold text-lg mb-2">
+                              {plan.name}
+                            </h3>
+                            <p className="text-slate-400 text-sm mb-4">
+                              {plan.description}
+                            </p>
                             <div className="mb-4">
-                              <span className="text-2xl font-bold text-white">${plan.monthlyPrice}</span>
-                              <span className="text-slate-400 text-sm">/month</span>
-                              <p className="text-slate-500 text-xs">or ${plan.yearlyPrice}/year</p>
+                              <span className="text-2xl font-bold text-white">
+                                ${plan.monthlyPrice}
+                              </span>
+                              <span className="text-slate-400 text-sm">
+                                /month
+                              </span>
+                              <p className="text-slate-500 text-xs">
+                                or ${plan.yearlyPrice}/year
+                              </p>
                             </div>
                             <ul className="space-y-2 text-left">
                               {plan.features.map((feature, idx) => (
-                                <li key={idx} className="flex items-center text-slate-300 text-sm">
+                                <li
+                                  key={idx}
+                                  className="flex items-center text-slate-300 text-sm"
+                                >
                                   <CheckCircle className="h-4 w-4 text-green-400 mr-2 flex-shrink-0" />
                                   {feature}
                                 </li>
@@ -357,42 +456,54 @@ export const AddSubscription = () => {
                       Billing Cycle
                     </label>
                     <div className="grid grid-cols-2 gap-4">
-                      <label className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                        formData.billingCycle === 'monthly'
-                          ? 'border-purple-500 bg-purple-500/10'
-                          : 'border-slate-600 bg-slate-700/50 hover:border-slate-500'
-                      }`}>
+                      <label
+                        className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                          formData.billingCycle === "monthly"
+                            ? "border-purple-500 bg-purple-500/10"
+                            : "border-slate-600 bg-slate-700/50 hover:border-slate-500"
+                        }`}
+                      >
                         <input
                           type="radio"
                           name="billingCycle"
                           value="monthly"
-                          checked={formData.billingCycle === 'monthly'}
-                          onChange={(e) => handleInputChange('billingCycle', e.target.value)}
+                          checked={formData.billingCycle === "monthly"}
+                          onChange={(e) =>
+                            handleInputChange("billingCycle", e.target.value)
+                          }
                           className="sr-only"
                         />
                         <div className="text-center">
                           <Calendar className="h-6 w-6 text-purple-400 mx-auto mb-2" />
                           <p className="text-white font-medium">Monthly</p>
-                          <p className="text-slate-400 text-sm">Billed every month</p>
+                          <p className="text-slate-400 text-sm">
+                            Billed every month
+                          </p>
                         </div>
                       </label>
-                      <label className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                        formData.billingCycle === 'yearly'
-                          ? 'border-purple-500 bg-purple-500/10'
-                          : 'border-slate-600 bg-slate-700/50 hover:border-slate-500'
-                      }`}>
+                      <label
+                        className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                          formData.billingCycle === "yearly"
+                            ? "border-purple-500 bg-purple-500/10"
+                            : "border-slate-600 bg-slate-700/50 hover:border-slate-500"
+                        }`}
+                      >
                         <input
                           type="radio"
                           name="billingCycle"
                           value="yearly"
-                          checked={formData.billingCycle === 'yearly'}
-                          onChange={(e) => handleInputChange('billingCycle', e.target.value)}
+                          checked={formData.billingCycle === "yearly"}
+                          onChange={(e) =>
+                            handleInputChange("billingCycle", e.target.value)
+                          }
                           className="sr-only"
                         />
                         <div className="text-center">
                           <Calendar className="h-6 w-6 text-green-400 mx-auto mb-2" />
                           <p className="text-white font-medium">Yearly</p>
-                          <p className="text-slate-400 text-sm">Save 2 months!</p>
+                          <p className="text-slate-400 text-sm">
+                            Save 2 months!
+                          </p>
                         </div>
                       </label>
                     </div>
@@ -411,7 +522,9 @@ export const AddSubscription = () => {
                       <Input
                         type="date"
                         value={formData.startDate}
-                        onChange={(e) => handleInputChange('startDate', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("startDate", e.target.value)
+                        }
                         className="bg-slate-700 border-slate-600 text-white"
                       />
                     </div>
@@ -424,7 +537,12 @@ export const AddSubscription = () => {
                         min="0"
                         max="90"
                         value={formData.trialDays}
-                        onChange={(e) => handleInputChange('trialDays', parseInt(e.target.value) || 0)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "trialDays",
+                            parseInt(e.target.value) || 0
+                          )
+                        }
                         placeholder="0"
                         className="bg-slate-700 border-slate-600 text-white"
                       />
@@ -441,7 +559,12 @@ export const AddSubscription = () => {
                         min="0"
                         max="100"
                         value={formData.discount}
-                        onChange={(e) => handleInputChange('discount', parseInt(e.target.value) || 0)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "discount",
+                            parseInt(e.target.value) || 0
+                          )
+                        }
                         placeholder="0"
                         className="bg-slate-700 border-slate-600 text-white"
                       />
@@ -452,7 +575,9 @@ export const AddSubscription = () => {
                       </label>
                       <select
                         value={formData.paymentMethod}
-                        onChange={(e) => handleInputChange('paymentMethod', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("paymentMethod", e.target.value)
+                        }
                         className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white"
                       >
                         <option value="credit_card">Credit Card</option>
@@ -469,7 +594,9 @@ export const AddSubscription = () => {
                     </label>
                     <textarea
                       value={formData.notes}
-                      onChange={(e) => handleInputChange('notes', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("notes", e.target.value)
+                      }
                       placeholder="Add any additional notes..."
                       rows={3}
                       className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white resize-none"
@@ -481,7 +608,9 @@ export const AddSubscription = () => {
                       type="checkbox"
                       id="autoRenew"
                       checked={formData.autoRenew}
-                      onChange={(e) => handleInputChange('autoRenew', e.target.checked)}
+                      onChange={(e) =>
+                        handleInputChange("autoRenew", e.target.checked)
+                      }
                       className="mr-3"
                     />
                     <label htmlFor="autoRenew" className="text-slate-300">
@@ -491,7 +620,9 @@ export const AddSubscription = () => {
 
                   {/* Subscription Summary */}
                   <div className="p-6 bg-slate-700/50 rounded-lg">
-                    <h3 className="text-white font-medium mb-4">Subscription Summary</h3>
+                    <h3 className="text-white font-medium mb-4">
+                      Subscription Summary
+                    </h3>
                     <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-slate-400">User:</span>
@@ -503,25 +634,34 @@ export const AddSubscription = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-400">Billing:</span>
-                        <span className="text-white capitalize">{formData.billingCycle}</span>
+                        <span className="text-white capitalize">
+                          {formData.billingCycle}
+                        </span>
                       </div>
                       {formData.trialDays > 0 && (
                         <div className="flex justify-between">
                           <span className="text-slate-400">Trial Period:</span>
-                          <span className="text-white">{formData.trialDays} days</span>
+                          <span className="text-white">
+                            {formData.trialDays} days
+                          </span>
                         </div>
                       )}
                       {formData.discount > 0 && (
                         <div className="flex justify-between">
                           <span className="text-slate-400">Discount:</span>
-                          <span className="text-green-400">-{formData.discount}%</span>
+                          <span className="text-green-400">
+                            -{formData.discount}%
+                          </span>
                         </div>
                       )}
                       <div className="border-t border-slate-600 pt-3">
                         <div className="flex justify-between">
                           <span className="text-slate-400">Total Price:</span>
                           <span className="text-white font-bold text-lg">
-                            ${calculatePrice()}/{formData.billingCycle === 'yearly' ? 'year' : 'month'}
+                            ${calculatePrice()}/
+                            {formData.billingCycle === "yearly"
+                              ? "year"
+                              : "month"}
                           </span>
                         </div>
                       </div>
@@ -547,7 +687,7 @@ export const AddSubscription = () => {
                   <Button
                     type="button"
                     variant="ghost"
-                    onClick={() => navigate('/admin/subscriptions')}
+                    onClick={() => navigate("/admin/subscriptions")}
                     className="text-slate-400 hover:text-white"
                   >
                     Cancel

@@ -12,58 +12,16 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { useUIStore } from "./store/uiStore";
 import { Sidebar } from "./components/layout/Sidebar";
 import { Topbar } from "./components/layout/Topbar";
-
-// Auth Pages
-import { Login } from "./pages/auth/Login";
-import { Signup } from "./pages/auth/Signup";
-import { ForgotPassword } from "./pages/auth/ForgotPassword";
-
-// Admin Auth Pages
-import { AdminLogin } from "./pages/admin/auth/AdminLogin";
-import { AdminForgotPassword } from "./pages/admin/auth/AdminForgotPassword";
-
-// Main Pages
-import { Dashboard } from "./pages/dashboard/Dashboard";
-import { LeadsList } from "./pages/leads/LeadsList";
-import { AddLead } from "./pages/leads/AddLead";
-import { LeadDetail } from "./pages/leads/LeadDetail";
-import { CampaignList } from "./pages/campaigns/CampaignList";
-import { CreateCampaign } from "./pages/campaigns/CreateCampaign";
-import { AIEmailGenerator } from "./pages/emails/AIEmailGenerator";
-import { EmailTracking } from "./pages/emails/EmailTracking";
-import { Settings } from "./pages/settings/Settings";
-import { BillingOverview } from "./pages/billing/BillingOverview";
-import { Pricing } from "./pages/billing/Pricing.jsx";
-import { TopUpCredits } from "./pages/billing/TopUpCredits";
-import { CRMIntegration } from "./pages/crm/CRMIntegration";
-
-// Landing & Onboarding Pages
-import { LandingPage } from "./pages/landing/LandingPage";
-import { OnboardingFlow } from "./pages/onboarding/OnboardingFlow";
-import { OnboardingSuccess } from "./pages/onboarding/OnboardingSuccess";
-
-// Admin Pages
 import { AdminLayout } from "./components/admin/layout/AdminLayout";
-import { AdminDashboard } from "./pages/admin/dashboard/AdminDashboard";
-import { UserManagement } from "./pages/admin/users/UserManagement";
-import { AddUser } from "./pages/admin/users/AddUser";
-import { EditUser } from "./pages/admin/users/EditUser";
-import { RoleManagement } from "./pages/admin/roles/RoleManagement";
-import { CreateRole } from "./pages/admin/roles/CreateRole";
-import { EditRole } from "./pages/admin/roles/EditRole";
-import { SubscriptionManagement } from "./pages/admin/subscriptions/SubscriptionManagement";
-import { AddSubscription } from "./pages/admin/subscriptions/AddSubscription";
-import { EditSubscription } from "./pages/admin/subscriptions/EditSubscription";
-import { Analytics } from "./pages/admin/analytics/Analytics";
-import { SystemSettings } from "./pages/admin/settings/SystemSettings";
-import { AdminProfile } from "./pages/admin/profile/AdminProfile";
-import { DatabaseManagement } from "./pages/admin/database/DatabaseManagement";
-import { EmailTemplates } from "./pages/admin/templates/EmailTemplates";
-import { ContentManagement } from "./pages/admin/content/ContentManagement";
-import { ApiManagement } from "./pages/admin/api/ApiManagement";
-import { BillingPayments } from "./pages/admin/billing/BillingPayments";
-import { SecurityLogs } from "./pages/admin/security/SecurityLogs";
 import { TawkToChat } from "./components/TawkToChat";
+
+// Import route configurations
+import {
+  publicRoutes,
+  adminAuthRoutes,
+  protectedRoutes,
+  adminProtectedRoutes,
+} from "./routes";
 
 const queryClient = new QueryClient();
 
@@ -187,436 +145,83 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route
-        path="/login"
-        element={
-          isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />
-        }
-      />
-      <Route
-        path="/forgot-password"
-        element={
-          isAuthenticated ? (
-            <Navigate to="/dashboard" replace />
-          ) : (
-            <ForgotPassword />
-          )
-        }
-      />
-      <Route path="/pricing" element={<Pricing />} />
+      {publicRoutes.map((route) => {
+        const Component = route.element;
+        const shouldRedirect = route.redirectIfAuth && isAuthenticated;
 
-      {/* Landing & Onboarding Routes */}
-      <Route path="/landing" element={<LandingPage />} />
-      <Route path="/onboarding" element={<OnboardingFlow />} />
-      <Route path="/onboarding/success" element={<OnboardingSuccess />} />
+        return (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              shouldRedirect ? (
+                <Navigate to={route.redirectIfAuth} replace />
+              ) : (
+                <Component />
+              )
+            }
+          />
+        );
+      })}
 
       {/* Admin Auth Routes */}
-      <Route
-        path="/admin/login"
-        element={
-          isAuthenticated && isAdmin ? (
-            <Navigate to="/admin/dashboard" replace />
-          ) : (
-            <AdminLogin />
-          )
-        }
-      />
-      <Route
-        path="/admin/forgot-password"
-        element={
-          isAuthenticated && isAdmin ? (
-            <Navigate to="/admin/dashboard" replace />
-          ) : (
-            <AdminForgotPassword />
-          )
-        }
-      />
+      {adminAuthRoutes.map((route) => {
+        const Component = route.element;
+        const shouldRedirect =
+          route.redirectIfAuth && isAuthenticated && isAdmin;
+
+        return (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              shouldRedirect ? (
+                <Navigate to={route.redirectIfAuth} replace />
+              ) : (
+                <Component />
+              )
+            }
+          />
+        );
+      })}
 
       {/* Protected Routes */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Dashboard />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
+      {protectedRoutes.map((route) => {
+        const Component = route.element;
 
-      <Route
-        path="/leads"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <LeadsList />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/leads/add"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <AddLead />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/leads/:id"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <LeadDetail />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/campaigns"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <CampaignList />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/campaigns/create"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <CreateCampaign />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/ai-email"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <AIEmailGenerator />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Settings />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/billing"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <BillingOverview />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/billing/topup"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <TopUpCredits />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Placeholder routes for other pages */}
-      <Route
-        path="/emails"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <EmailTracking />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/crm"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <CRMIntegration />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
+        return (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Component />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+        );
+      })}
 
       {/* Admin Protected Routes */}
-      <Route
-        path="/admin/dashboard"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <AdminDashboard />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/users"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <UserManagement />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/users/add"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <AddUser />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/users/edit/:userId"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <EditUser />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/roles"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <RoleManagement />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/roles/create"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <CreateRole />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/roles/edit/:roleId"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <EditRole />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/subscriptions"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <SubscriptionManagement />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/subscriptions/add"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <AddSubscription />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/subscriptions/edit/:subscriptionId"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <EditSubscription />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/analytics"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <Analytics />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/settings"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <SystemSettings />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/profile"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <AdminProfile />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/database"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <DatabaseManagement />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/email-templates"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <EmailTemplates />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/content"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <ContentManagement />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
+      {adminProtectedRoutes.map((route) => {
+        const Component = route.element;
 
-      {/* Placeholder admin routes */}
-      <Route
-        path="/admin/database"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <div className="p-6">
-                <h1 className="text-2xl font-bold text-white">
-                  Database Management
-                </h1>
-                <p className="text-slate-400">Coming soon...</p>
-              </div>
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/email-templates"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <div className="p-6">
-                <h1 className="text-2xl font-bold text-white">
-                  Email Templates
-                </h1>
-                <p className="text-slate-400">Coming soon...</p>
-              </div>
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/content"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <div className="p-6">
-                <h1 className="text-2xl font-bold text-white">
-                  Content Management
-                </h1>
-                <p className="text-slate-400">Coming soon...</p>
-              </div>
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/api"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <ApiManagement />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/billing"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <BillingPayments />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/security"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout>
-              <SecurityLogs />
-            </AdminLayout>
-          </AdminProtectedRoute>
-        }
-      />
-
-      {/* Default redirects */}
-      <Route
-        path="/admin"
-        element={<Navigate to="/admin/dashboard" replace />}
-      />
-      <Route path="/" element={<LandingPage />} />
+        return (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <AdminProtectedRoute>
+                <AdminLayout>
+                  <Component />
+                </AdminLayout>
+              </AdminProtectedRoute>
+            }
+          />
+        );
+      })}
     </Routes>
   );
 };

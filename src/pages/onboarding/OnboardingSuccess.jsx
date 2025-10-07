@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
+import leadTreeLogo from '../../assets/leadtree.png';
 
 export const OnboardingSuccess = () => {
   const location = useLocation();
@@ -69,8 +70,11 @@ export const OnboardingSuccess = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg"></div>
-              <span className="text-xl font-bold text-slate-900 dark:text-white">LeadTree</span>
+              <img 
+                src={leadTreeLogo} 
+                alt="LeadTree" 
+                className="h-8 w-auto object-contain"
+              />
             </div>
             <Button onClick={() => navigate('/dashboard')}>
               Go to Dashboard

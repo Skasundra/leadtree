@@ -352,9 +352,11 @@ export const UserManagement = () => {
                     <td className="py-4 px-4 text-slate-300">{user.loginCount}</td>
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white h-8 w-8 p-0">
-                          <Eye className="h-4 w-4" />
-                        </Button>
+                        <Link to={`/admin/users/view/${user.id}`}>
+                          <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white h-8 w-8 p-0">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
                         <Link to={`/admin/users/edit/${user.id}`}>
                           <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white h-8 w-8 p-0">
                             <Edit className="h-4 w-4" />

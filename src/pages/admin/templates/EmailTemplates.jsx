@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Mail, 
   Plus, 
@@ -27,6 +28,7 @@ import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 
 export const EmailTemplates = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('templates');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -167,7 +169,9 @@ export const EmailTemplates = () => {
             <Upload className="h-4 w-4 mr-2" />
             Import
           </Button>
-          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+          <Button 
+            onClick={() => navigate('/admin/email-templates/add')}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
             <Plus className="h-4 w-4 mr-2" />
             New Template
           </Button>
@@ -322,10 +326,18 @@ export const EmailTemplates = () => {
                         Modified: {template.lastModified}
                       </span>
                       <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white h-8 w-8 p-0">
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => navigate(`/admin/email-templates/view/${template.id}`)}
+                          className="text-slate-400 hover:text-white h-8 w-8 p-0">
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white h-8 w-8 p-0">
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => navigate(`/admin/email-templates/edit/${template.id}`)}
+                          className="text-slate-400 hover:text-white h-8 w-8 p-0">
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button size="sm" variant="ghost" className="text-slate-400 hover:text-white h-8 w-8 p-0">
@@ -350,7 +362,9 @@ export const EmailTemplates = () => {
                   <Mail className="h-16 w-16 text-slate-600 mx-auto mb-4" />
                   <h3 className="text-white text-lg font-medium mb-2">No Templates Found</h3>
                   <p className="text-slate-400 mb-4">No templates match your current search criteria</p>
-                  <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  <Button 
+                    onClick={() => navigate('/admin/email-templates/add')}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
                     <Plus className="h-4 w-4 mr-2" />
                     Create New Template
                   </Button>

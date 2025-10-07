@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { 
-  User, 
-  Bell, 
-  Shield, 
-  Palette, 
-  Database, 
-  Mail, 
+import { useState } from "react";
+import {
+  User,
+  Bell,
+  Shield,
+  Palette,
+  Database,
+  Mail,
   Key,
   Globe,
   CreditCard,
@@ -17,17 +17,29 @@ import {
   Upload,
   Trash2,
   Eye,
-  EyeOff
-} from 'lucide-react';
-import { PageWrapper } from '../../components/layout/PageWrapper';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { useAuth } from '../../context/AuthContext.jsx';
-import { useTheme } from '../../context/ThemeContext.jsx';
-import { toast } from 'react-hot-toast';
+  EyeOff,
+} from "lucide-react";
+import { PageWrapper } from "../../components/layout/PageWrapper";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/Card";
+import { Button } from "../../components/ui/Button";
+import { Input } from "../../components/ui/Input";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useTheme } from "../../context/ThemeContext.jsx";
+import { toast } from "react-hot-toast";
 
-const SettingsSection = ({ icon: Icon, title, description, children, actions }) => (
+const SettingsSection = ({
+  icon: Icon,
+  title,
+  description,
+  children,
+  actions,
+}) => (
   <Card className="border-0 shadow-lg">
     <CardHeader>
       <div className="flex items-center justify-between">
@@ -36,20 +48,12 @@ const SettingsSection = ({ icon: Icon, title, description, children, actions }) 
             <Icon className="h-5 w-5 mr-2 text-blue-600" />
             {title}
           </CardTitle>
-          <CardDescription className="mt-1">
-            {description}
-          </CardDescription>
+          <CardDescription className="mt-1">{description}</CardDescription>
         </div>
-        {actions && (
-          <div className="flex space-x-2">
-            {actions}
-          </div>
-        )}
+        {actions && <div className="flex space-x-2">{actions}</div>}
       </div>
     </CardHeader>
-    <CardContent>
-      {children}
-    </CardContent>
+    <CardContent>{children}</CardContent>
   </Card>
 );
 
@@ -57,24 +61,26 @@ export const Settings = () => {
   const { user, updateProfile } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState("profile");
   const [showPassword, setShowPassword] = useState(false);
 
   const [profileData, setProfileData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
-    phone: '',
-    company: '',
-    position: '',
-    timezone: 'UTC',
-    language: 'en'
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: "",
+    company: "",
+    position: "",
+    bio: "",
+    website: "",
+    timezone: "UTC",
+    language: "en",
   });
 
   const [securityData, setSecurityData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-    twoFactorEnabled: false
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+    twoFactorEnabled: false,
   });
 
   const [notificationSettings, setNotificationSettings] = useState({
@@ -83,33 +89,33 @@ export const Settings = () => {
     leadAlerts: true,
     campaignUpdates: true,
     weeklyReports: true,
-    marketingEmails: false
+    marketingEmails: false,
   });
 
   const [integrationSettings, setIntegrationSettings] = useState({
     crmConnected: false,
-    emailProvider: 'gmail',
-    webhookUrl: '',
-    apiKey: ''
+    emailProvider: "gmail",
+    webhookUrl: "",
+    apiKey: "",
   });
 
   const tabs = [
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'security', label: 'Security', icon: Shield },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'appearance', label: 'Appearance', icon: Palette },
-    { id: 'integrations', label: 'Integrations', icon: Database },
-    { id: 'billing', label: 'Billing', icon: CreditCard },
-    { id: 'team', label: 'Team', icon: Users }
+    { id: "profile", label: "Profile", icon: User },
+    { id: "security", label: "Security", icon: Shield },
+    { id: "notifications", label: "Notifications", icon: Bell },
+    { id: "appearance", label: "Appearance", icon: Palette },
+    { id: "integrations", label: "Integrations", icon: Database },
+    { id: "billing", label: "Billing", icon: CreditCard },
+    { id: "team", label: "Team", icon: Users },
   ];
 
   const handleProfileUpdate = async () => {
     setLoading(true);
     try {
       await updateProfile(profileData);
-      toast.success('Profile updated successfully');
+      toast.success("Profile updated successfully");
     } catch (error) {
-      toast.error('Failed to update profile');
+      toast.error("Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -117,23 +123,23 @@ export const Settings = () => {
 
   const handlePasswordChange = async () => {
     if (securityData.newPassword !== securityData.confirmPassword) {
-      toast.error('New passwords do not match');
+      toast.error("New passwords do not match");
       return;
     }
-    
+
     setLoading(true);
     try {
       // Simulate password change
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSecurityData(prev => ({
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setSecurityData((prev) => ({
         ...prev,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
       }));
-      toast.success('Password changed successfully');
+      toast.success("Password changed successfully");
     } catch (error) {
-      toast.error('Failed to change password');
+      toast.error("Failed to change password");
     } finally {
       setLoading(false);
     }
@@ -148,14 +154,14 @@ export const Settings = () => {
         actions={
           <Button onClick={handleProfileUpdate} disabled={loading}>
             <Save className="h-4 w-4 mr-2" />
-            {loading ? 'Saving...' : 'Save Changes'}
+            {loading ? "Saving..." : "Save Changes"}
           </Button>
         }
       >
         <div className="space-y-4">
           <div className="flex items-center space-x-4 mb-6">
             <div className="h-20 w-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-semibold">
-              {user?.name?.charAt(0) || 'U'}
+              {user?.name?.charAt(0) || "U"}
             </div>
             <div>
               <Button variant="outline" size="sm">
@@ -175,7 +181,9 @@ export const Settings = () => {
               </label>
               <Input
                 value={profileData.name}
-                onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setProfileData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 placeholder="Enter your full name"
               />
             </div>
@@ -186,7 +194,9 @@ export const Settings = () => {
               <Input
                 type="email"
                 value={profileData.email}
-                onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setProfileData((prev) => ({ ...prev, email: e.target.value }))
+                }
                 placeholder="Enter your email"
               />
             </div>
@@ -200,7 +210,9 @@ export const Settings = () => {
               <Input
                 type="tel"
                 value={profileData.phone}
-                onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) =>
+                  setProfileData((prev) => ({ ...prev, phone: e.target.value }))
+                }
                 placeholder="Enter your phone number"
               />
             </div>
@@ -210,7 +222,12 @@ export const Settings = () => {
               </label>
               <Input
                 value={profileData.company}
-                onChange={(e) => setProfileData(prev => ({ ...prev, company: e.target.value }))}
+                onChange={(e) =>
+                  setProfileData((prev) => ({
+                    ...prev,
+                    company: e.target.value,
+                  }))
+                }
                 placeholder="Enter your company"
               />
             </div>
@@ -223,7 +240,12 @@ export const Settings = () => {
               </label>
               <Input
                 value={profileData.position}
-                onChange={(e) => setProfileData(prev => ({ ...prev, position: e.target.value }))}
+                onChange={(e) =>
+                  setProfileData((prev) => ({
+                    ...prev,
+                    position: e.target.value,
+                  }))
+                }
                 placeholder="Enter your position"
               />
             </div>
@@ -232,10 +254,96 @@ export const Settings = () => {
                 Role
               </label>
               <Input
-                value={user?.role?.replace('_', ' ').toUpperCase() || ''}
+                value={user?.role?.replace("_", " ").toUpperCase() || ""}
                 disabled
                 className="bg-slate-50 dark:bg-slate-900"
               />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
+              Bio
+            </label>
+            <textarea
+              value={profileData.bio}
+              onChange={(e) =>
+                setProfileData((prev) => ({ ...prev, bio: e.target.value }))
+              }
+              placeholder="Tell us about yourself..."
+              rows={4}
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            />
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Brief description for your profile. Max 200 characters.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
+              Website
+            </label>
+            <Input
+              type="url"
+              value={profileData.website}
+              onChange={(e) =>
+                setProfileData((prev) => ({ ...prev, website: e.target.value }))
+              }
+              placeholder="https://yourwebsite.com"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
+                Timezone
+              </label>
+              <select
+                value={profileData.timezone}
+                onChange={(e) =>
+                  setProfileData((prev) => ({
+                    ...prev,
+                    timezone: e.target.value,
+                  }))
+                }
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="UTC">UTC (Coordinated Universal Time)</option>
+                <option value="America/New_York">Eastern Time (ET)</option>
+                <option value="America/Chicago">Central Time (CT)</option>
+                <option value="America/Denver">Mountain Time (MT)</option>
+                <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                <option value="Europe/London">London (GMT)</option>
+                <option value="Europe/Paris">Paris (CET)</option>
+                <option value="Asia/Tokyo">Tokyo (JST)</option>
+                <option value="Asia/Shanghai">Shanghai (CST)</option>
+                <option value="Australia/Sydney">Sydney (AEDT)</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
+                Language
+              </label>
+              <select
+                value={profileData.language}
+                onChange={(e) =>
+                  setProfileData((prev) => ({
+                    ...prev,
+                    language: e.target.value,
+                  }))
+                }
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="zh">Chinese</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+              </select>
             </div>
           </div>
         </div>
@@ -252,7 +360,7 @@ export const Settings = () => {
         actions={
           <Button onClick={handlePasswordChange} disabled={loading}>
             <Save className="h-4 w-4 mr-2" />
-            {loading ? 'Changing...' : 'Change Password'}
+            {loading ? "Changing..." : "Change Password"}
           </Button>
         }
       >
@@ -263,9 +371,14 @@ export const Settings = () => {
             </label>
             <div className="relative">
               <Input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={securityData.currentPassword}
-                onChange={(e) => setSecurityData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                onChange={(e) =>
+                  setSecurityData((prev) => ({
+                    ...prev,
+                    currentPassword: e.target.value,
+                  }))
+                }
                 placeholder="Enter current password"
                 className="pr-10"
               />
@@ -274,7 +387,11 @@ export const Settings = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
@@ -285,9 +402,14 @@ export const Settings = () => {
                 New Password
               </label>
               <Input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={securityData.newPassword}
-                onChange={(e) => setSecurityData(prev => ({ ...prev, newPassword: e.target.value }))}
+                onChange={(e) =>
+                  setSecurityData((prev) => ({
+                    ...prev,
+                    newPassword: e.target.value,
+                  }))
+                }
                 placeholder="Enter new password"
               />
             </div>
@@ -296,9 +418,14 @@ export const Settings = () => {
                 Confirm New Password
               </label>
               <Input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={securityData.confirmPassword}
-                onChange={(e) => setSecurityData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                onChange={(e) =>
+                  setSecurityData((prev) => ({
+                    ...prev,
+                    confirmPassword: e.target.value,
+                  }))
+                }
                 placeholder="Confirm new password"
               />
             </div>
@@ -313,13 +440,17 @@ export const Settings = () => {
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-medium text-slate-900 dark:text-white">Enable 2FA</p>
+            <p className="font-medium text-slate-900 dark:text-white">
+              Enable 2FA
+            </p>
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Secure your account with two-factor authentication
             </p>
           </div>
-          <Button variant={securityData.twoFactorEnabled ? "default" : "outline"}>
-            {securityData.twoFactorEnabled ? 'Disable' : 'Enable'} 2FA
+          <Button
+            variant={securityData.twoFactorEnabled ? "default" : "outline"}
+          >
+            {securityData.twoFactorEnabled ? "Disable" : "Enable"} 2FA
           </Button>
         </div>
       </SettingsSection>
@@ -338,22 +469,30 @@ export const Settings = () => {
             <div key={key} className="flex items-center justify-between py-2">
               <div>
                 <p className="font-medium text-slate-900 dark:text-white capitalize">
-                  {key.replace(/([A-Z])/g, ' $1').trim()}
+                  {key.replace(/([A-Z])/g, " $1").trim()}
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {key === 'emailNotifications' && 'Receive notifications via email'}
-                  {key === 'pushNotifications' && 'Receive push notifications in browser'}
-                  {key === 'leadAlerts' && 'Get notified about new leads'}
-                  {key === 'campaignUpdates' && 'Updates about your campaigns'}
-                  {key === 'weeklyReports' && 'Weekly performance reports'}
-                  {key === 'marketingEmails' && 'Marketing and promotional emails'}
+                  {key === "emailNotifications" &&
+                    "Receive notifications via email"}
+                  {key === "pushNotifications" &&
+                    "Receive push notifications in browser"}
+                  {key === "leadAlerts" && "Get notified about new leads"}
+                  {key === "campaignUpdates" && "Updates about your campaigns"}
+                  {key === "weeklyReports" && "Weekly performance reports"}
+                  {key === "marketingEmails" &&
+                    "Marketing and promotional emails"}
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={value}
-                  onChange={(e) => setNotificationSettings(prev => ({ ...prev, [key]: e.target.checked }))}
+                  onChange={(e) =>
+                    setNotificationSettings((prev) => ({
+                      ...prev,
+                      [key]: e.target.checked,
+                    }))
+                  }
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-blue-600"></div>
@@ -375,13 +514,15 @@ export const Settings = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-slate-900 dark:text-white">Dark Mode</p>
+              <p className="font-medium text-slate-900 dark:text-white">
+                Dark Mode
+              </p>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Switch between light and dark themes
               </p>
             </div>
             <Button onClick={toggleTheme} variant="outline">
-              {theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
+              {theme === "dark" ? "Switch to Light" : "Switch to Dark"}
             </Button>
           </div>
         </div>
@@ -391,15 +532,15 @@ export const Settings = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'profile':
+      case "profile":
         return renderProfileSettings();
-      case 'security':
+      case "security":
         return renderSecuritySettings();
-      case 'notifications':
+      case "notifications":
         return renderNotificationSettings();
-      case 'appearance':
+      case "appearance":
         return renderAppearanceSettings();
-      case 'integrations':
+      case "integrations":
         return (
           <SettingsSection
             icon={Database}
@@ -408,11 +549,13 @@ export const Settings = () => {
           >
             <div className="text-center py-8">
               <Database className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-              <p className="text-slate-600 dark:text-slate-400">Integration settings coming soon</p>
+              <p className="text-slate-600 dark:text-slate-400">
+                Integration settings coming soon
+              </p>
             </div>
           </SettingsSection>
         );
-      case 'billing':
+      case "billing":
         return (
           <SettingsSection
             icon={CreditCard}
@@ -421,11 +564,13 @@ export const Settings = () => {
           >
             <div className="text-center py-8">
               <CreditCard className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-              <p className="text-slate-600 dark:text-slate-400">Billing settings coming soon</p>
+              <p className="text-slate-600 dark:text-slate-400">
+                Billing settings coming soon
+              </p>
             </div>
           </SettingsSection>
         );
-      case 'team':
+      case "team":
         return (
           <SettingsSection
             icon={Users}
@@ -434,7 +579,9 @@ export const Settings = () => {
           >
             <div className="text-center py-8">
               <Users className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-              <p className="text-slate-600 dark:text-slate-400">Team management coming soon</p>
+              <p className="text-slate-600 dark:text-slate-400">
+                Team management coming soon
+              </p>
             </div>
           </SettingsSection>
         );
@@ -472,8 +619,8 @@ export const Settings = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                       activeTab === tab.id
-                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+                        ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
                     <tab.icon className="h-4 w-4 mr-3" />
@@ -486,9 +633,7 @@ export const Settings = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1">
-          {renderContent()}
-        </div>
+        <div className="flex-1">{renderContent()}</div>
       </div>
     </PageWrapper>
   );
