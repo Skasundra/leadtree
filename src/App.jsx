@@ -33,6 +33,8 @@ import { EmailTracking } from "./pages/emails/EmailTracking";
 import { Settings } from "./pages/settings/Settings";
 import { BillingOverview } from "./pages/billing/BillingOverview";
 import { Pricing } from "./pages/billing/Pricing.jsx";
+import { TopUpCredits } from "./pages/billing/TopUpCredits";
+import { CRMIntegration } from "./pages/crm/CRMIntegration";
 
 // Landing & Onboarding Pages
 import { LandingPage } from "./pages/landing/LandingPage";
@@ -60,6 +62,7 @@ import { ContentManagement } from "./pages/admin/content/ContentManagement";
 import { ApiManagement } from "./pages/admin/api/ApiManagement";
 import { BillingPayments } from "./pages/admin/billing/BillingPayments";
 import { SecurityLogs } from "./pages/admin/security/SecurityLogs";
+import { TawkToChat } from "./components/TawkToChat";
 
 const queryClient = new QueryClient();
 
@@ -323,6 +326,17 @@ const AppRoutes = () => {
         }
       />
 
+      <Route
+        path="/billing/topup"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <TopUpCredits />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
       {/* Placeholder routes for other pages */}
       <Route
         path="/emails"
@@ -340,14 +354,7 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <AppLayout>
-              <div className="p-6">
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                  CRM Integration
-                </h1>
-                <p className="text-slate-600 dark:text-slate-400">
-                  Coming soon...
-                </p>
-              </div>
+              <CRMIntegration />
             </AppLayout>
           </ProtectedRoute>
         }
@@ -608,6 +615,7 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <Router>
+            <TawkToChat />
             <AppRoutes />
             <Toaster
               position="top-right"

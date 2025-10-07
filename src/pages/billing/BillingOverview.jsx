@@ -1,4 +1,5 @@
-import { CreditCard, Download, Calendar, TrendingUp } from 'lucide-react';
+import { CreditCard, Download, Calendar, TrendingUp, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { PageWrapper } from '../../components/layout/PageWrapper';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -33,6 +34,8 @@ const UsageCard = ({ title, current, limit, unit, color = "primary" }) => {
 };
 
 export const BillingOverview = () => {
+  const navigate = useNavigate();
+  
   const currentPlan = {
     name: "Pro Plan",
     price: 49,
@@ -64,10 +67,16 @@ export const BillingOverview = () => {
         title="Billing & Usage"
         description="Manage your subscription and monitor usage"
         actions={
-          <Button variant="outline">
-            <CreditCard className="h-4 w-4 mr-2" />
-            Update Payment Method
-          </Button>
+          <div className="flex space-x-3">
+            <Button variant="outline" onClick={() => window.location.href = '/billing/topup'}>
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Buy Top-up Credits
+            </Button>
+            <Button variant="outline">
+              <CreditCard className="h-4 w-4 mr-2" />
+              Update Payment Method
+            </Button>
+          </div>
         }
       >
         <div className="space-y-6">
@@ -98,9 +107,10 @@ export const BillingOverview = () => {
                   </div>
                 </div>
                 <div className="mt-6 lg:mt-0 space-y-2">
-                  <Button>Upgrade Plan</Button>
-                  <Button variant="outline" className="w-full lg:w-auto">
-                    View All Plans
+                  <Button onClick={() => navigate('/pricing')}>Upgrade Plan</Button>
+                  <Button variant="outline" className="w-full lg:w-auto" onClick={() => navigate('/billing/topup')}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Buy Credits
                   </Button>
                 </div>
               </div>
