@@ -26,6 +26,7 @@ import { AdminForgotPassword } from "./pages/admin/auth/AdminForgotPassword";
 import { Dashboard } from "./pages/dashboard/Dashboard";
 import { LeadsList } from "./pages/leads/LeadsList";
 import { AddLead } from "./pages/leads/AddLead";
+import { LeadDetail } from "./pages/leads/LeadDetail";
 import { CampaignList } from "./pages/campaigns/CampaignList";
 import { CreateCampaign } from "./pages/campaigns/CreateCampaign";
 import { AIEmailGenerator } from "./pages/emails/AIEmailGenerator";
@@ -209,7 +210,7 @@ const AppRoutes = () => {
         }
       />
       <Route path="/pricing" element={<Pricing />} />
-      
+
       {/* Landing & Onboarding Routes */}
       <Route path="/landing" element={<LandingPage />} />
       <Route path="/onboarding" element={<OnboardingFlow />} />
@@ -266,6 +267,17 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <AppLayout>
               <AddLead />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/leads/:id"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <LeadDetail />
             </AppLayout>
           </ProtectedRoute>
         }

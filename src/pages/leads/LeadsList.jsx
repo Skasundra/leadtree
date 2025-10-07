@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Plus,
   Search,
@@ -8,9 +8,9 @@ import {
   MoreHorizontal,
   Users,
   TrendingUp,
-  Mail,
-  Phone,
-  Building,
+  MapPin,
+  Database,
+  Globe,
   Calendar,
   Eye,
   Edit,
@@ -46,114 +46,98 @@ import {
 const mockLeads = [
   {
     id: 1,
-    name: "John Smith",
-    email: "john.smith@company.com",
-    company: "Tech Corp",
-    position: "CEO",
-    status: "New",
-    tags: ["Enterprise", "Hot Lead"],
-    lastContact: "2024-01-15",
-    source: "Website",
-    phone: "+1 (555) 123-4567",
-    score: 85,
-    avatar: null,
+    keyword: "Plumber",
+    place: "New York, NY",
+    recordCount: 150,
+    source: "Google",
+    status: "Completed",
+    dateCreated: "2024-01-15",
+    recordsFound: 150,
   },
   {
     id: 2,
-    name: "Sarah Johnson",
-    email: "sarah.j@startup.io",
-    company: "StartupIO",
-    position: "CTO",
-    status: "Contacted",
-    tags: ["Startup", "Technical"],
-    lastContact: "2024-01-14",
-    source: "LinkedIn",
-    phone: "+1 (555) 234-5678",
-    score: 72,
-    avatar: null,
+    keyword: "Restaurant",
+    place: "Los Angeles, CA",
+    recordCount: 200,
+    source: "Yelp",
+    status: "In Progress",
+    dateCreated: "2024-01-14",
+    recordsFound: 87,
   },
   {
     id: 3,
-    name: "Mike Davis",
-    email: "mike@enterprise.com",
-    company: "Enterprise Solutions",
-    position: "VP Sales",
-    status: "Qualified",
-    tags: ["Enterprise", "Decision Maker"],
-    lastContact: "2024-01-13",
-    source: "Referral",
-    phone: "+1 (555) 345-6789",
-    score: 91,
-    avatar: null,
+    keyword: "Dentist",
+    place: "Chicago, IL",
+    recordCount: 100,
+    source: "YellowMap",
+    status: "Completed",
+    dateCreated: "2024-01-13",
+    recordsFound: 100,
   },
   {
     id: 4,
-    name: "Emily Chen",
-    email: "emily.chen@innovate.com",
-    company: "Innovate Labs",
-    position: "Product Manager",
-    status: "Proposal",
-    tags: ["Product", "Innovation"],
-    lastContact: "2024-01-12",
-    source: "Event",
-    phone: "+1 (555) 456-7890",
-    score: 78,
-    avatar: null,
+    keyword: "Electrician",
+    place: "Mumbai, India",
+    recordCount: 250,
+    source: "JustDial",
+    status: "Completed",
+    dateCreated: "2024-01-12",
+    recordsFound: 250,
   },
   {
     id: 5,
-    name: "David Wilson",
-    email: "d.wilson@globaltech.com",
-    company: "Global Tech",
-    position: "Director",
-    status: "Negotiation",
-    tags: ["Global", "Director"],
-    lastContact: "2024-01-11",
-    source: "Cold Email",
-    phone: "+1 (555) 567-8901",
-    score: 88,
-    avatar: null,
+    keyword: "Contractor",
+    place: "Houston, TX",
+    recordCount: 180,
+    source: "BBB",
+    status: "Failed",
+    dateCreated: "2024-01-11",
+    recordsFound: 0,
+  },
+  {
+    id: 6,
+    keyword: "HVAC Service",
+    place: "Phoenix, AZ",
+    recordCount: 120,
+    source: "Angi",
+    status: "Completed",
+    dateCreated: "2024-01-10",
+    recordsFound: 120,
+  },
+  {
+    id: 7,
+    keyword: "Manufacturer",
+    place: "Delhi, India",
+    recordCount: 300,
+    source: "IndiaMART",
+    status: "In Progress",
+    dateCreated: "2024-01-09",
+    recordsFound: 145,
   },
 ];
 
 const StatusBadge = ({ status }) => {
   const statusConfig = {
-    New: {
-      color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-      dot: "bg-blue-500",
+    Completed: {
+      color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
+      dot: "bg-emerald-500",
     },
-    Contacted: {
+    "In Progress": {
       color:
         "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
       dot: "bg-amber-500",
     },
-    Qualified: {
-      color:
-        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-      dot: "bg-emerald-500",
-    },
-    Proposal: {
-      color:
-        "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-      dot: "bg-purple-500",
-    },
-    Negotiation: {
-      color:
-        "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
-      dot: "bg-orange-500",
-    },
-    Won: {
-      color:
-        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
-      dot: "bg-green-500",
-    },
-    Lost: {
+    Failed: {
       color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
       dot: "bg-red-500",
     },
+    Pending: {
+      color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+      dot: "bg-blue-500",
+    },
   };
 
-  const config = statusConfig[status] || statusConfig["New"];
+  const config = statusConfig[status] || statusConfig["Pending"];
 
   return (
     <span
@@ -165,35 +149,25 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-const LeadScore = ({ score }) => {
-  const getScoreColor = (score) => {
-    if (score >= 80) return "text-emerald-600 dark:text-emerald-400";
-    if (score >= 60) return "text-amber-600 dark:text-amber-400";
-    return "text-red-600 dark:text-red-400";
-  };
-
+const ProgressBar = ({ current, total }) => {
+  const percentage = total > 0 ? (current / total) * 100 : 0;
+  
   return (
     <div className="flex items-center space-x-2">
-      <div className={`text-sm font-semibold ${getScoreColor(score)}`}>
-        {score}
+      <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+        {current}/{total}
       </div>
-      <div className="w-16 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+      <div className="w-20 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
         <div
-          className={`h-full transition-all duration-300 ${
-            score >= 80
-              ? "bg-emerald-500"
-              : score >= 60
-              ? "bg-amber-500"
-              : "bg-red-500"
-          }`}
-          style={{ width: `${score}%` }}
+          className="h-full transition-all duration-300 bg-blue-500"
+          style={{ width: `${percentage}%` }}
         />
       </div>
     </div>
   );
 };
 
-const LeadCard = ({ lead, onSelect, isSelected }) => (
+const LeadCard = ({ lead, onSelect, isSelected, onViewDetails }) => (
   <Card className="hover:shadow-lg transition-all duration-200 border-0 bg-white dark:bg-slate-800">
     <CardContent className="p-6">
       <div className="flex items-start justify-between mb-4">
@@ -204,18 +178,15 @@ const LeadCard = ({ lead, onSelect, isSelected }) => (
             onChange={() => onSelect(lead.id)}
             className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
           />
-          <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-            {lead.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
+          <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xs">
+            {lead.source.substring(0, 2).toUpperCase()}
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 dark:text-white">
-              {lead.name}
+              {lead.keyword}
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {lead.position} at {lead.company}
+              {lead.place}
             </p>
           </div>
         </div>
@@ -224,51 +195,46 @@ const LeadCard = ({ lead, onSelect, isSelected }) => (
 
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-          <Mail className="h-4 w-4 mr-2" />
-          {lead.email}
+          <Search className="h-4 w-4 mr-2" />
+          Keyword: {lead.keyword}
         </div>
         <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-          <Phone className="h-4 w-4 mr-2" />
-          {lead.phone}
+          <MapPin className="h-4 w-4 mr-2" />
+          Location: {lead.place}
         </div>
         <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-          <Building className="h-4 w-4 mr-2" />
-          {lead.company}
+          <Database className="h-4 w-4 mr-2" />
+          Target: {lead.recordCount} records
         </div>
       </div>
 
       <div className="flex items-center justify-between mb-4">
         <div className="text-sm">
-          <span className="text-slate-500 dark:text-slate-400">Score:</span>
-          <LeadScore score={lead.score} />
+          <span className="text-slate-500 dark:text-slate-400">Progress:</span>
+          <ProgressBar current={lead.recordsFound} total={lead.recordCount} />
         </div>
         <div className="text-sm text-slate-500 dark:text-slate-400">
-          Last contact: {lead.lastContact}
+          {lead.dateCreated}
         </div>
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="flex flex-wrap gap-1">
-          {lead.tags.slice(0, 2).map((tag, index) => (
-            <span
-              key={index}
-              className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
-            >
-              {tag}
-            </span>
-          ))}
-          {lead.tags.length > 2 && (
-            <span className="text-xs text-slate-500 dark:text-slate-400">
-              +{lead.tags.length - 2} more
-            </span>
-          )}
+        <div className="flex items-center space-x-2">
+          <Globe className="h-4 w-4 text-slate-400" />
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+            {lead.source}
+          </span>
         </div>
         <div className="flex space-x-1">
-          <Button variant="ghost" size="sm">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => onViewDetails(lead.id)}
+          >
             <Eye className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="sm">
-            <Edit className="h-4 w-4" />
+            <Download className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="sm">
             <MoreHorizontal className="h-4 w-4" />
@@ -280,20 +246,20 @@ const LeadCard = ({ lead, onSelect, isSelected }) => (
 );
 
 export const LeadsList = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLeads, setSelectedLeads] = useState([]);
   const [viewMode, setViewMode] = useState("table"); // 'table' or 'grid'
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState("keyword");
   const [sortOrder, setSortOrder] = useState("asc");
   const [statusFilter, setStatusFilter] = useState("all");
 
   const filteredLeads = mockLeads
     .filter((lead) => {
       const matchesSearch =
-        lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.position.toLowerCase().includes(searchTerm.toLowerCase());
+        lead.keyword.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lead.place.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lead.source.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         statusFilter === "all" || lead.status === statusFilter;
@@ -367,13 +333,13 @@ export const LeadsList = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                    Total Leads
+                    Total Searches
                   </p>
                   <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                     {mockLeads.length}
                   </p>
                 </div>
-                <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                <Search className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
             </CardContent>
           </Card>
@@ -383,11 +349,11 @@ export const LeadsList = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                    Qualified
+                    Completed
                   </p>
                   <p className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
                     {
-                      mockLeads.filter((lead) => lead.status === "Qualified")
+                      mockLeads.filter((lead) => lead.status === "Completed")
                         .length
                     }
                   </p>
@@ -406,11 +372,8 @@ export const LeadsList = () => {
                   </p>
                   <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
                     {
-                      mockLeads.filter((lead) =>
-                        ["Contacted", "Proposal", "Negotiation"].includes(
-                          lead.status
-                        )
-                      ).length
+                      mockLeads.filter((lead) => lead.status === "In Progress")
+                        .length
                     }
                   </p>
                 </div>
@@ -424,16 +387,13 @@ export const LeadsList = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
-                    Avg. Score
+                    Total Records
                   </p>
                   <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
-                    {Math.round(
-                      mockLeads.reduce((acc, lead) => acc + lead.score, 0) /
-                        mockLeads.length
-                    )}
+                    {mockLeads.reduce((acc, lead) => acc + lead.recordsFound, 0)}
                   </p>
                 </div>
-                <Star className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                <Database className="h-8 w-8 text-purple-600 dark:text-purple-400" />
               </div>
             </CardContent>
           </Card>
@@ -460,13 +420,10 @@ export const LeadsList = () => {
                   className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="all">All Status</option>
-                  <option value="New">New</option>
-                  <option value="Contacted">Contacted</option>
-                  <option value="Qualified">Qualified</option>
-                  <option value="Proposal">Proposal</option>
-                  <option value="Negotiation">Negotiation</option>
-                  <option value="Won">Won</option>
-                  <option value="Lost">Lost</option>
+                  <option value="Completed">Completed</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Failed">Failed</option>
+                  <option value="Pending">Pending</option>
                 </select>
               </div>
 
@@ -502,7 +459,7 @@ export const LeadsList = () => {
         {viewMode === "table" ? (
           <Card className="border-0 shadow-lg">
             <CardHeader>
-              <CardTitle>All Leads ({filteredLeads.length})</CardTitle>
+              <CardTitle>All Lead Searches ({filteredLeads.length})</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -522,11 +479,11 @@ export const LeadsList = () => {
                       </TableHead>
                       <TableHead
                         className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800"
-                        onClick={() => handleSort("name")}
+                        onClick={() => handleSort("keyword")}
                       >
                         <div className="flex items-center">
-                          Name
-                          {sortBy === "name" &&
+                          Keyword
+                          {sortBy === "keyword" &&
                             (sortOrder === "asc" ? (
                               <SortAsc className="h-4 w-4 ml-1" />
                             ) : (
@@ -536,11 +493,11 @@ export const LeadsList = () => {
                       </TableHead>
                       <TableHead
                         className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800"
-                        onClick={() => handleSort("company")}
+                        onClick={() => handleSort("place")}
                       >
                         <div className="flex items-center">
-                          Company
-                          {sortBy === "company" &&
+                          Place
+                          {sortBy === "place" &&
                             (sortOrder === "asc" ? (
                               <SortAsc className="h-4 w-4 ml-1" />
                             ) : (
@@ -548,12 +505,11 @@ export const LeadsList = () => {
                             ))}
                         </div>
                       </TableHead>
-                      <TableHead>Position</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Score</TableHead>
-                      <TableHead>Tags</TableHead>
-                      <TableHead>Last Contact</TableHead>
                       <TableHead>Source</TableHead>
+                      <TableHead>Target Records</TableHead>
+                      <TableHead>Progress</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Date Created</TableHead>
                       <TableHead className="w-12"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -573,58 +529,56 @@ export const LeadsList = () => {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-3">
-                            <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                              {lead.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
+                            <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xs">
+                              <Search className="h-5 w-5" />
                             </div>
                             <div>
                               <div className="font-medium text-slate-900 dark:text-white">
-                                {lead.name}
-                              </div>
-                              <div className="text-sm text-slate-500 dark:text-slate-400">
-                                {lead.email}
+                                {lead.keyword}
                               </div>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell className="font-medium">
-                          {lead.company}
+                          <div className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2 text-slate-400" />
+                            {lead.place}
+                          </div>
                         </TableCell>
-                        <TableCell>{lead.position}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center">
+                            <Globe className="h-4 w-4 mr-2 text-slate-400" />
+                            {lead.source}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300">
+                            {lead.recordCount}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <ProgressBar current={lead.recordsFound} total={lead.recordCount} />
+                        </TableCell>
                         <TableCell>
                           <StatusBadge status={lead.status} />
                         </TableCell>
                         <TableCell>
-                          <LeadScore score={lead.score} />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {lead.tags.slice(0, 2).map((tag, index) => (
-                              <span
-                                key={index}
-                                className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                            {lead.tags.length > 2 && (
-                              <span className="text-xs text-slate-500 dark:text-slate-400">
-                                +{lead.tags.length - 2}
-                              </span>
-                            )}
+                          <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            {lead.dateCreated}
                           </div>
                         </TableCell>
-                        <TableCell>{lead.lastContact}</TableCell>
-                        <TableCell>{lead.source}</TableCell>
                         <TableCell>
                           <div className="flex space-x-1">
-                            <Button variant="ghost" size="sm">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => navigate(`/leads/${lead.id}`)}
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="sm">
-                              <Edit className="h-4 w-4" />
+                              <Download className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="sm">
                               <MoreHorizontal className="h-4 w-4" />
@@ -646,6 +600,7 @@ export const LeadsList = () => {
                 lead={lead}
                 onSelect={handleSelectLead}
                 isSelected={selectedLeads.includes(lead.id)}
+                onViewDetails={(id) => navigate(`/leads/${id}`)}
               />
             ))}
           </div>
