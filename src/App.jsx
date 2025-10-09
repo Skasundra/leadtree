@@ -31,11 +31,28 @@ const ProtectedRoute = ({ children }) => {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="h-12 w-12 bg-gradient-to-br from-primary to-secondary rounded-xl animate-pulse mx-auto mb-4 shadow-lg"></div>
-          <p className="text-slate-600 dark:text-slate-400 font-medium">
-            Loading...
-          </p>
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <img
+              src="/src/assets/leadtree-v2.png"
+              alt="Loading"
+              className="h-24 w-24 object-contain"
+            />
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              <div
+                className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              ></div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -54,9 +71,28 @@ const AdminProtectedRoute = ({ children }) => {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="h-12 w-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl animate-pulse mx-auto mb-4 shadow-lg"></div>
-          <p className="text-slate-400 font-medium">Loading...</p>
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <img
+              src="/src/assets/leadtree-v2.png"
+              alt="Loading"
+              className="h-24 w-24 object-contain"
+            />
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              <div
+                className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              ></div>
+            </div>
+          </div>
         </div>
       </div>
     );
